@@ -84,7 +84,7 @@ python src/habitat-lab/examples/example.py
 ## Run Experiments
 ```
 cd src/algos/EME/
-python -u train.py --env-name='SolariesNoFrameskip-v4' --cuda (if cuda is available) --lr-decay  --log-dir='logs' --seed=123
+python -u train.py --env-name='SolarisNoFrameskip-v4' --cuda (if cuda is available) --lr-decay  --log-dir='logs' --seed=123
 ```
 
 ## Cite as
