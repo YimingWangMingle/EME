@@ -40,7 +40,7 @@ It is evident that our method significantly improves diversity and exploration e
 
 To set up the environment and install dependencies, follow these steps:
 
-Clone the Repository and Install Basic Requirements
+Clone the repository and install basic requirements
 ```bash
 git clone --recurse-submodules [EME]
 cd EME
@@ -48,14 +48,14 @@ pip install -e .
 pip install -r requirements.txt
 ```
 
-Create a New Conda Environment and Install Required Packages
+Create a new conda environment and install required packages
 ```bash
 conda create -n eme python=3.9 cmake=3.14.0
 conda activate eme
 conda install habitat-sim withbullet -c conda-forge -c aihabitat
 ```
 
-Clone and Install `habitat-lab` `habitat-baselines`
+Clone and install `habitat-lab` `habitat-baselines`
 ```bash
 cd src
 git clone --branch stable https://github.com/facebookresearch/habitat-lab.git
@@ -64,19 +64,19 @@ pip install -e .
 pip install -e habitat-baselines
 ```
 
-Install Additional Dependencies
+Install additional dependencies
 ```bash
 conda install git git-lfs
 ```
 
-Download the Required Datasets
+Download the required datasets
 ```bash
 python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes --data-path data/
 python -m habitat_sim.utils.datasets_download --uids habitat_test_pointnav_dataset --data-path data/
 python -m habitat_sim.utils.datasets_download --uids mp3d_example_scene --data-path data/
 python -m habitat_sim.utils.datasets_download --username xxxxxxxxxxxx --password xxxxxxxxxxxx --uids hm3d_minival_v0.2
 ```
-Verify the Installation by Running an Example
+Verify the installation by running an example
 ```bash
 python src/habitat-lab/examples/example.py
 ```
