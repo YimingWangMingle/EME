@@ -1,5 +1,5 @@
 from arguments import get_args
-from ppo_agent import ppo_agent
+from agent import ppo_agent
 from utils.env_wrapper.create_env import create_multiple_envs, create_single_env
 from utils.seeds.seeds import set_seeds
 import os

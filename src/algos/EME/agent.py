@@ -107,6 +107,19 @@ class ppo_agent:
         total_loss = loss + reward_loss
         return total_loss
 
+    def train_EME(data_loader, ensemble, eme_metric, gamma, epochs):
+        for epoch in range(epochs):
+            for state_i, state_j, action_i, action_j, reward_i, reward_j, next_state_i, next_state_j, policy_dist_i, policy_dist_j in data_loader:
+                # Calculate EME metric
+                eme_distance = eme_metric.calculate(state_i, state_j, reward_i, reward_j, next_state_i, next_state_j, policy_dist_i, policy_dist_j)
+            
+            # Compute loss and optimize
+                for model, optimizer in zip(ensemble.models, ensemble.optimizers):
+                    optimizer.zero_grad()
+                    outputs = model(state_i)
+                    loss = (outputs - eme_distance).pow(2).mean()
+                    loss.backward()
+                    optimizer.step()
 
     def learn(self):
         log_data = {}
