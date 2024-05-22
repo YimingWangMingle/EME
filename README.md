@@ -1,5 +1,5 @@
 # Effective Metric-Based Exploration Bonus (EME)
-This repository contains the code for the NeurIPS 2024 paper:
+This repository contains the code for the NeurIPS 2024 submission:
 [Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus]()
 
 ### Overview:
@@ -82,25 +82,18 @@ python habitat-lab/examples/example.py
 Clone the repository and install other requirements in habitat:
 ```
 git clone --recurse-submodules [EME]
-cd EME/habitat-lab
-pip install -r requirements.txt
-```
-The following packages are required for the EME project in Mujoco ... :
-```
-cd EME/
 pip install -e .
 pip install -r requirements.txt
 ```
 
 ## Run Experiments
-Please enter `ppo` folder to run `EME`
 ```
-cd ppo/
-python -u train.py --env-name='HabitatRearrange-v0' --cuda (if cuda is available) --log-dir='logs' --seed=123
+cd src/algos/EME/
+python -u train.py --env-name='SolariesNoFrameskip-v4' --cuda (if cuda is available) --lr-decay  --log-dir='logs' --seed=123
 ```
 
 ## Cite as
-> Anonymous, 2024. Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus. NeurIPS.
+> Anonymous, Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus. NeurIPS submission 2024.
 
 ### Bibtex:
 ```
