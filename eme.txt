@@ -1,0 +1,6 @@
+@inproceedings{wang2024rethinking,
+  title={Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus},
+  author={Yiming Wang and Kaiyan Zhao and Furui Liu and Leong Hou U},
+  booktitle={The Thirty-eighth Annual Conference on Neural Information Processing Systems},
+  year={2024}
+}
