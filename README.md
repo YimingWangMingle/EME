@@ -8,7 +8,6 @@ The EME model introduces an effective metric-based exploration bonus that addres
 ## Experimental Results
 
 ### Results of EME
-The following images showcase the performance of our proposed Effective Metric-Based Exploration Bonus (EME) algorithm in various scenarios:
 
 ![Our Method Performance 1](./figs/41.gif)
 ![Our Method Performance 2](./figs/42.gif)
@@ -16,7 +15,7 @@ The following images showcase the performance of our proposed Effective Metric-B
 ![Our Method Performance 4](./figs/44.gif)
 
 ### Results of Other Methods
-For comparison, we also present the performance of other methods (see details in the paper) under the same experimental conditions. These comparisons highlight the advantages of EME in handling complex exploration tasks.
+For comparison, we also present the performance of other methods (see details in the paper). These comparisons highlight the advantages of EME in handling complex exploration tasks.
 
 ![Other Method Performance 1](./figs/11.gif)
 ![Other Method Performance 2](./figs/12.gif)
