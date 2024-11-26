@@ -36,60 +36,55 @@ For comparison, we also present the performance of other methods (see details in
 It is evident that our method significantly improves diversity and exploration efficiency. The EME model introduces a more robust metric for state discrepancy evaluation and dynamically adjusts the diversity-enhanced scale factor by the variance of prediction from an ensemble of reward models, effectively increasing the breadth and efficiency of state exploration. These results validate the effectiveness and advantages of our method in handling exploration tasks.
 
 
-
 ## Installing Dependencies
+
 To set up the environment and install dependencies, follow these steps:
 
-Create a new conda environment and install the required packages:
+Clone the repository and install basic requirements
+```bash
+git clone --recurse-submodules [EME]
+cd EME
+pip install -e .
+pip install -r requirements.txt
 ```
+
+Create a new conda environment and install required packages
+```bash
 conda create -n eme python=3.9 cmake=3.14.0
 conda activate eme
-
 conda install habitat-sim withbullet -c conda-forge -c aihabitat
 ```
 
-Clone and install habitat-lab:
-```
+Clone and install `habitat-lab` `habitat-baselines`
+```bash
+cd src
 git clone --branch stable https://github.com/facebookresearch/habitat-lab.git
 cd habitat-lab
-pip install -e habitat-lab 
-```
-
-Install habitat-baselines:
-```
+pip install -e .
 pip install -e habitat-baselines
 ```
 
-Install additional dependencies:
-```
+Install additional dependencies
+```bash
 conda install git git-lfs
 ```
 
-Download the required datasets:
-```
+Download the required datasets
+```bash
 python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes --data-path data/
 python -m habitat_sim.utils.datasets_download --uids habitat_test_pointnav_dataset --data-path data/
 python -m habitat_sim.utils.datasets_download --uids mp3d_example_scene --data-path data/
 python -m habitat_sim.utils.datasets_download --username xxxxxxxxxxxx --password xxxxxxxxxxxx --uids hm3d_minival_v0.2
 ```
-
-Verify the installation by running an example:
-```
-python habitat-lab/examples/example.py
-```
-
-## Setup
-Clone the repository and install other requirements in habitat:
-```
-git clone --recurse-submodules [EME]
-pip install -e .
-pip install -r requirements.txt
+Verify the installation by running an example
+```bash
+python src/habitat-lab/examples/example.py
 ```
 
 ## Run Experiments
 ```
 cd src/algos/EME/
-python -u train.py --env-name='SolariesNoFrameskip-v4' --cuda (if cuda is available) --lr-decay  --log-dir='logs' --seed=123
+python -u train.py --env-name='SolarisNoFrameskip-v4' --cuda (if cuda is available) --lr-decay  --log-dir='logs' --seed=123
 ```
 
 ## Cite as
