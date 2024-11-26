@@ -33,8 +33,6 @@ For comparison, we also present the performance of other methods (see details in
 ![Other Method Performance 11](./figs/33.gif)
 ![Other Method Performance 12](./figs/34.gif)
 
-It is evident that our method significantly improves diversity and exploration efficiency. The EME model introduces a more robust metric for state discrepancy evaluation and dynamically adjusts the diversity-enhanced scale factor by the variance of prediction from an ensemble of reward models, effectively increasing the breadth and efficiency of state exploration. These results validate the effectiveness and advantages of our method in handling exploration tasks.
-
 
 ## Installing Dependencies
 
@@ -90,15 +88,21 @@ cd ./habitat-lab/scripts
 ./run_local_reward_free.sh
 ```
 
+This is useful for debugging, but is too slow otherwise. To run for enough steps, you will need to run distributed over multiple GPUs.
+
+To run EME, ICM, RND, NovelD, E3B with 32 GPUs on a Slurm cluster, do:
+```
+sbatch multi_node_reward_free_{eme,icm, rnd, noveld,e3b}.sh
+```
 ## Cite as
-> Anonymous, Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus. NeurIPS submission 2024.
+> Wang, Y., Zhao, K., & Liu, F. Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus. In The Thirty-eighth Annual Conference on Neural Information Processing Systems.
 
 ### Bibtex:
 ```
-@inproceedings{anonymous2024rethinking,
+@inproceedings{wangrethinking,
   title={Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus},
-  author={Anonymous},
-  booktitle={Anonymous},
+  author={Wang, Yiming and Zhao, Kaiyan and Liu, Furui and others},
+  booktitle={The Thirty-eighth Annual Conference on Neural Information Processing Systems}
   year={2024}
 }
 ```
