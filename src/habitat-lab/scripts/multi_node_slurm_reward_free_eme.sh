@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=ddppo
+#SBATCH --job-name=ddppo-eme
 #SBATCH --output=slurm/logs/%j.log
 #SBATCH --error=slurm/logs/%j.err
 #SBATCH --cpus-per-task=10
@@ -29,20 +29,25 @@ echo $name
 
 set -x
 
-
 entropy=0.000005
 bonus_coef=0.01
+kl_coef=0.1
+max_reward_scaling=1.0
+num_ensemble_models=5
 seed=1
-tag=hm3d-noreward-noveld-sub-rgbd-bc_${bonus_coef}-entropy_${entropy}-seed_${seed}
+tag=hm3d-noreward-eme-rgbd-bc_${bonus_coef}-entropy_${entropy}-kl_${kl_coef}-mrs_${max_reward_scaling}-nem_${num_ensemble_models}-seed_${seed}
 echo $tag
 
 srun python -u -m habitat_baselines.run \
      --exp-config habitat_baselines/config/pointnav/ddppo_pointnav_hm3d.yaml \
      --run-type train TENSORBOARD_DIR data/hm3d/tb/${tag} CHECKPOINT_FOLDER data/hm3d/ckpt/${tag} TASK_CONFIG.SEED ${seed} \
-     TRAINER_NAME ddppo-noveld \
+     TRAINER_NAME ddppo-eme \
      RL.PPO.entropy_coef $entropy \
-     RL.E2B.bonus_coef $bonus_coef \
-     RL.E2B.inv_dynamics_epochs 3 \
+     RL.EME.bonus_coef $bonus_coef \
+     RL.EME.kl_coef $kl_coef \
+     RL.EME.max_reward_scaling $max_reward_scaling \
+     RL.EME.num_ensemble_models $num_ensemble_models \
+     RL.EME.encoder_feature_dim 512 \
      TOTAL_NUM_STEPS 5e8 \
      NUM_UPDATES -1 \
      NUM_CHECKPOINTS 100

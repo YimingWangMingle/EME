@@ -1,5 +1,5 @@
 # Effective Metric-Based Exploration Bonus (EME)
-This repository contains the code for the NeurIPS 2024 submission:
+This repository contains the code for the NeurIPS 2024 paper
 [Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus]()
 
 ### Overview:
@@ -82,9 +82,12 @@ python src/habitat-lab/examples/example.py
 ```
 
 ## Run Experiments
+First, you will need to install the Habitat simulator. To do this, follow the instructions from the official Habitat repo [here](https://github.com/facebookresearch/habitat-lab), and make sure you can run the DD-PPO baseline. You will also need to download the [HM3D dataset](https://github.com/facebookresearch/habitat-matterport3d-dataset)
+
+To run EME locally on a single machine, do:
 ```
-cd src/algos/EME/
-python -u train.py --env-name='SolarisNoFrameskip-v4' --cuda (if cuda is available) --lr-decay  --log-dir='logs' --seed=123
+cd ./habitat-lab/scripts
+./run_local_reward_free.sh
 ```
 
 ## Cite as

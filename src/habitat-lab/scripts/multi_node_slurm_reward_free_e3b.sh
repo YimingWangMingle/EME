@@ -40,12 +40,12 @@ echo $tag
 srun python -u -m habitat_baselines.run \
      --exp-config habitat_baselines/config/pointnav/ddppo_pointnav_hm3d.yaml \
      --run-type train TENSORBOARD_DIR data/hm3d/tb/${tag} CHECKPOINT_FOLDER data/hm3d/ckpt/${tag} TASK_CONFIG.SEED ${seed} \
-     TRAINER_NAME ddppo-e3b \
+     TRAINER_NAME ddppo-e2b \
      RL.PPO.entropy_coef $entropy \
-     RL.EME.bonus_coef $bonus_coef \
-     RL.EME.ridge $ridge \
-     RL.EME.inv_dynamics_epochs 0 \
-     RL.EME.embedding idm \
+     RL.E2B.bonus_coef $bonus_coef \
+     RL.E2B.ridge $ridge \
+     RL.E2B.inv_dynamics_epochs 0 \
+     RL.E2B.embedding idm \
      TOTAL_NUM_STEPS 5e8 \
      NUM_UPDATES -1 \
      NUM_CHECKPOINTS 100

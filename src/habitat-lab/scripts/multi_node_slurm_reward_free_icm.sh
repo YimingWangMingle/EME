@@ -1,5 +1,3 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved
-
 #!/bin/bash
 #SBATCH --job-name=ddppo
 #SBATCH --output=slurm/logs/%j.log
@@ -13,6 +11,7 @@
 #SBATCH --partition=devlab
 #SBATCH --time=72:00:00
 #SBATCH --requeue
+#SBATCH --comment="NeurIPS deadline 5/19/2022"
 
 export MAGNUM_LOG=quiet
 
@@ -43,9 +42,9 @@ srun python -u -m habitat_baselines.run \
      --run-type train TENSORBOARD_DIR data/hm3d/tb/${tag} CHECKPOINT_FOLDER data/hm3d/ckpt/${tag} TASK_CONFIG.SEED ${seed} \
      TRAINER_NAME ddppo-icm \
      RL.PPO.entropy_coef $entropy \
-     RL.EME.bonus_coef $bonus_coef \
-     RL.EME.inv_dynamics_epochs 3 \
-     RL.EME.embedding idm \
+     RL.E2B.bonus_coef $bonus_coef \
+     RL.E2B.inv_dynamics_epochs 3 \
+     RL.E2B.embedding idm \
      RL.ICM.fdm_coef $fdm_coef \
      TOTAL_NUM_STEPS 5e8 \
      NUM_UPDATES -1 \
