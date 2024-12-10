@@ -59,7 +59,25 @@ Verify the installation by running an example
 python src/habitat-lab/examples/example.py
 ```
 
-## Run Experiments
+## Test Experiments
+
+After successfully installing `habitat-lab` and `habitat-sim` dependencies, you can run a test experiment to ensure everything is set up correctly.
+
+### Running the EME Training Script
+
+Navigate to the `habitat-lab` directory and execute the `eme_train.py` script:
+
+```bash
+cd src/habitat-lab
+python eme_train.py
+```
+
+### Description
+
+The `eme_train.py` script initializes and starts the training process for the Effective Metric-Based Exploration (EME) model. This script sets up the necessary environments, loads the configuration settings, and begins training the EME model using the effective metric-based exploration bonus as described in our paper. Running this script allows you to verify that all dependencies are correctly installed and that the EME model is functioning as expected.
+
+
+## Other Experiments
 First, you will need to install the Habitat simulator. To do this, follow the instructions from the official Habitat repo [here](https://github.com/facebookresearch/habitat-lab), and make sure you can run the DD-PPO baseline. You will also need to download the [HM3D dataset](https://github.com/facebookresearch/habitat-matterport3d-dataset)
 
 To run EME locally on a single machine, do:
