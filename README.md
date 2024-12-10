@@ -14,25 +14,6 @@ The EME model introduces an effective metric-based exploration bonus that addres
 ![Our Method Performance 3](./figs/43.gif)
 ![Our Method Performance 4](./figs/44.gif)
 
-### Results of Other Methods
-For comparison, we also present the performance of other methods (see details in the paper). These comparisons highlight the advantages of EME in handling complex exploration tasks.
-
-![Other Method Performance 1](./figs/11.gif)
-![Other Method Performance 2](./figs/12.gif)
-![Other Method Performance 3](./figs/13.gif)
-![Other Method Performance 4](./figs/14.gif)
-
-![Other Method Performance 5](./figs/21.gif)
-![Other Method Performance 6](./figs/22.gif)
-![Other Method Performance 7](./figs/23.gif)
-![Other Method Performance 8](./figs/24.gif)
-
-![Other Method Performance 9](./figs/31.gif)
-![Other Method Performance 10](./figs/32.gif)
-![Other Method Performance 11](./figs/33.gif)
-![Other Method Performance 12](./figs/34.gif)
-
-
 ## Installing Dependencies
 
 To set up the environment and install dependencies, follow these steps:
