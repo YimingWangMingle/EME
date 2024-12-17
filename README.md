@@ -76,6 +76,14 @@ python eme_train.py
 
 The `eme_train.py` script initializes and starts the training process for the Effective Metric-Based Exploration (EME) model. This script sets up the necessary environments, loads the configuration settings, and begins training the EME model using the effective metric-based exploration bonus as described in our paper. Running this script allows you to verify that all dependencies are correctly installed and that the EME model is functioning as expected.
 
+### Running the [Liberty](https://proceedings.neurips.cc/paper_files/paper/2023/hash/79f7f00cbe3003cea4d0c2326b4c0b42-Abstract-Conference.html) Training Script
+
+Navigate to the `habitat-lab` directory and execute the `liberty_train.py` script:
+
+```bash
+cd src/habitat-lab
+python liberty_train.py
+```
 
 ## Other Experiments
 First, you will need to install the Habitat simulator. To do this, follow the instructions from the official Habitat repo [here](https://github.com/facebookresearch/habitat-lab), and make sure you can run the DD-PPO baseline. You will also need to download the [HM3D dataset](https://github.com/facebookresearch/habitat-matterport3d-dataset)
