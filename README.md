@@ -63,26 +63,13 @@ python src/habitat-lab/examples/example.py
 
 After successfully installing `habitat-lab` and `habitat-sim` dependencies, you can run a test experiment to ensure everything is set up correctly.
 
-### Running the EME Training Script
+### Running the Training Script
 
 Navigate to the `habitat-lab` directory and execute the `eme_train.py` script:
 
 ```bash
 cd src/habitat-lab
 python eme_train.py
-```
-
-### Description
-
-The `eme_train.py` script initializes and starts the training process for the Effective Metric-Based Exploration (EME) model. This script sets up the necessary environments, loads the configuration settings, and begins training the EME model using the effective metric-based exploration bonus as described in our paper. Running this script allows you to verify that all dependencies are correctly installed and that the EME model is functioning as expected.
-
-### Running the [Liberty](https://proceedings.neurips.cc/paper_files/paper/2023/hash/79f7f00cbe3003cea4d0c2326b4c0b42-Abstract-Conference.html) Training Script
-
-Navigate to the `habitat-lab` directory and execute the `liberty_train.py` script:
-
-```bash
-cd src/habitat-lab
-python liberty_train.py
 ```
 
 ## Other Experiments
@@ -100,6 +87,8 @@ To run EME, ICM, RND, NovelD, E3B with 32 GPUs on a Slurm cluster, do:
 ```
 sbatch multi_node_reward_free_{eme,icm, rnd, noveld,e3b}.sh
 ```
+The implementation of other tasks will be released soon (up-to-date)
+
 ## Cite as
 > Wang, Y., Zhao, K., & Liu, F. Rethinking Exploration in Reinforcement Learning with Effective Metric-Based Exploration Bonus. In The Thirty-eighth Annual Conference on Neural Information Processing Systems.
 
