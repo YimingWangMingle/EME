@@ -1,3 +1,4 @@
+
 import habitat_sim
 import torch
 import torch.nn as nn
@@ -16,7 +17,7 @@ epsilon_clip = 0.2
 K_epochs = 4
 update_timestep = 2000
 max_timesteps = 1000000
-max_steps_per_episode = 500  # Maximum steps per episode
+max_steps_per_episode = 500
 kl_coef = 0.01
 max_reward_scaling = 1.0
 encoder_feature_dim = 512
@@ -24,9 +25,8 @@ decoder_lr = 1e-3
 num_ensemble_models = 5
 M = 1.0  # Maximum reward scaling factor
 
-# Set simulator parameters
-data_path = "/home/xxx/habitat-lab/"  # data path
-test_scene = os.path.join(data_path, "data/hm3d/hm3d-val-habitat-v0.2/00800-TEEsavR23oF/TEEsavR23oF.basis.glb")
+data_path = "/home/xxx/habitat-lab/"
+test_scene = os.path.join(data_path, "data/xxx/xxx/xxx.glb") # Change to your own path
 
 sim_settings = {
     "width": 256,
@@ -191,118 +191,101 @@ def cosine_distance(x, y):
     cos_similarity = numerator / (denominator + 1e-9)
     return torch.atan2(torch.sqrt(1. - cos_similarity.pow(2)), cos_similarity)
 
-# PPO and EME update function
 def ppo_update(memory, policy, state_reward_decoder, reward_models, optimizer_policy, optimizer_decoder, optimizer_ensemble, device):
-    # Convert data in memory to tensors and move to device
+    # Convert data in memory to tensors
     rewards = torch.tensor(memory.rewards, dtype=torch.float32).to(device)
     states = torch.stack(memory.states).to(device)  # Shape: (N, 3, H, W)
     actions = torch.tensor(memory.actions, dtype=torch.int64).to(device)
     old_logprobs = torch.tensor(np.array(memory.logprobs), dtype=torch.float32).to(device)
     embeddings = torch.stack(memory.embeddings).to(device)  # Shape: (N, feature_dim)
 
-    # Compute discounted rewards
-    discounted_rewards = []
-    discounted_reward = 0
-    for reward, done in zip(reversed(rewards.cpu().numpy()), reversed(memory.dones)):
-        if done:
-            discounted_reward = 0
-        discounted_reward = reward + (gamma * discounted_reward)
-        discounted_rewards.insert(0, discounted_reward)
-    discounted_rewards = torch.tensor(discounted_rewards, dtype=torch.float32).to(device)
-    discounted_rewards = (discounted_rewards - discounted_rewards.mean()) / (discounted_rewards.std() + 1e-5)
-
-    # Optimize for multiple epochs
-    for _ in range(K_epochs):
-        # Evaluate current policy
-        logprobs, state_values, dist_entropy, embed = policy.evaluate(states, actions)
-        state_values = torch.squeeze(state_values)
-
-        # Compute advantage
-        advantages = discounted_rewards - state_values.detach()
-
-        # Compute policy ratios
-        ratios = torch.exp(logprobs - old_logprobs)
-
-        # Compute loss
-        surr1 = ratios * advantages
-        surr2 = torch.clamp(ratios, 1 - epsilon_clip, 1 + epsilon_clip) * advantages
-        policy_loss = -torch.min(surr1, surr2).mean()
-        value_loss = nn.functional.mse_loss(state_values, discounted_rewards)
-        entropy_loss = -dist_entropy.mean()
-
-        # Total loss
-        loss = policy_loss + 0.5 * value_loss + 0.01 * entropy_loss
-
-        # Optimize policy network
-        optimizer_policy.zero_grad()
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(policy.parameters(), max_norm=0.5)  # Add gradient clipping
-        optimizer_policy.step()
-
-    # Compute EME intrinsic reward
+    # Compute EME intrinsic reward (if enough transitions exist)
     if len(memory.states) >= 2:
-        # Get consecutive state pairs
         s_i = states[:-1]
         s_j = states[1:]
         embed_i = embeddings[:-1]
         embed_j = embeddings[1:]
         rewards_i = rewards[:-1]
         rewards_j = rewards[1:]
-        done_i = memory.dones[:-1]
 
-        # Compute cosine distance
+        #  cosine distance
         cosine_dist = cosine_distance(embed_i, embed_j)
 
-        # Compute KL divergence of policy distributions
+        #  KL divergence
         with torch.no_grad():
             action_probs_i, _, _ = policy.forward(s_i)
             action_probs_j, _, _ = policy.forward(s_j)
         kl_div = compute_kl_divergence(action_probs_i, action_probs_j)
 
-        # Compute reward differences
+        #  reward prediction loss
         mu_i, sigma_i = state_reward_decoder(embed_i)
         mu_j, sigma_j = state_reward_decoder(embed_j)
-        reward_loss = state_reward_decoder.loss(mu_i, sigma_i, rewards_i) + state_reward_decoder.loss(mu_j, sigma_j, rewards_j)
+        reward_loss = state_reward_decoder.loss(mu_i, sigma_i, rewards_i) + \
+                      state_reward_decoder.loss(mu_j, sigma_j, rewards_j)
 
-        # Compute prediction variance of the ensemble reward models
+        #  ensemble variance
         with torch.no_grad():
-            ensemble_predictions = torch.stack([model(embed_i)[0] for model in reward_models], dim=0)  # Shape: (K, N-1, 1)
+            ensemble_predictions = torch.stack([model(embed_i)[0] for model in reward_models], dim=0)  # (K, N-1, 1)
             ensemble_mean = ensemble_predictions.mean(dim=0)
             ensemble_variance = torch.mean((ensemble_predictions - ensemble_mean) ** 2, dim=0)
 
-        # Compute diversity scaling factor
+        #  diversity scaling factor
         diversity_scaling_factor = torch.clamp(ensemble_variance, max=max_reward_scaling)
 
-        # Compute EME intrinsic reward
+        #  EME intrinsic reward
         eme_metric = cosine_dist + kl_div + reward_loss + diversity_scaling_factor
-
-        # Compute final intrinsic reward
         intrinsic_reward = eme_metric.squeeze(1) * torch.clamp(diversity_scaling_factor.squeeze(1), min=1.0, max=M)
 
-        # Update total reward
+        #  combine rewards
         combined_rewards = rewards[:-1] + intrinsic_reward.detach()
 
-        # Recompute advantage
-        advantages = combined_rewards - state_values[:-1].detach()
+        #  PPO update with combined rewards
+        states_short = states[:-1]
+        actions_short = actions[:-1]
+        old_logprobs_short = old_logprobs[:-1]
 
-        # Compute and optimize StateRewardDecoder
+        for _ in range(K_epochs):
+            logprobs, state_values, dist_entropy, _ = policy.evaluate(states_short, actions_short)
+            state_values = torch.squeeze(state_values)
+
+            advantages = combined_rewards - state_values.detach()
+            advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-5)
+
+            ratios = torch.exp(logprobs - old_logprobs_short)
+            surr1 = ratios * advantages
+            surr2 = torch.clamp(ratios, 1 - epsilon_clip, 1 + epsilon_clip) * advantages
+            policy_loss = -torch.min(surr1, surr2).mean()
+
+            value_loss = nn.functional.mse_loss(state_values, combined_rewards)
+            entropy_loss = -dist_entropy.mean()
+
+            loss = policy_loss + 0.5 * value_loss + 0.01 * entropy_loss
+
+            optimizer_policy.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(policy.parameters(), max_norm=0.5)
+            optimizer_policy.step()
+
+        #  optimize reward decoder
         decoder_loss = reward_loss.mean()
         optimizer_decoder.zero_grad()
         decoder_loss.backward()
         optimizer_decoder.step()
 
-        # Compute and optimize ensemble of reward models
+        #  optimize ensemble models
         ensemble_loss = 0
         for model in reward_models:
             pred_mu, _ = model(embed_i)
             ensemble_loss += nn.functional.mse_loss(pred_mu, rewards_i)
         ensemble_loss /= len(reward_models)
+
         optimizer_ensemble.zero_grad()
         ensemble_loss.backward()
         optimizer_ensemble.step()
 
-    # Clear memory pool
+    # Clear memory after update
     memory.clear_memory()
+
 
 # Convert RGB image to BGR
 def transform_rgb_bgr(image):
@@ -350,8 +333,8 @@ def train():
     print(f"Generated goal position: {goal_position}")
 
     # Define observation space and action space size
-    obs_space = sim_settings["width"] * sim_settings["height"] * 3  # Assuming RGB image
-    action_space = 3  # Three actions: move forward, turn left, turn right
+    obs_space = sim_settings["width"] * sim_settings["height"] * 3 
+    action_space = 3 
 
     # Initialize PPO policy network
     policy = PPO(action_space).to(device)
@@ -413,12 +396,12 @@ def train():
             # Assume closer distance gives higher reward, and end when reaching the goal
             extrinsic_reward = -distance_to_goal
             if distance_to_goal < 0.5:
-                extrinsic_reward += 100  # Give a large reward
+                extrinsic_reward += 100 
                 done = True
 
             # Check if maximum steps exceeded, force end if so
             if steps >= max_steps_per_episode:
-                extrinsic_reward -= 50  # Penalize for not completing the task within step limit
+                extrinsic_reward -= 50
                 done = True
 
             # Save to memory
